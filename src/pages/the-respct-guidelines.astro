@@ -1,11 +1,13 @@
 ---
-import { Layout, PageHeader, Section, Button, Watermark } from '@pcl/design-system';
+import { Layout, Section, Button, Watermark } from '@pcl/design-system';
+import PageHead from '../components/PageHead.astro';
 import { RESPCT_SECTIONS } from '@pcl/design-system';
 import { pdfs, citation } from '../site.config';
 import { siteConfig as site, u, navFor } from '../lib/url';
 import Citation from '../components/Citation.astro';
 import table from '../content/guidelines-table.json';
 import FooterCredit from '../components/FooterCredit.astro';
+import MotionFixes from '../components/MotionFixes.astro';
 import '../styles/site.css';
 
 const nav = navFor('/the-respct-guidelines/');
@@ -45,12 +47,12 @@ const schema = [
   <main id="main">
     <div class="has-watermark page-header-wm">
       <Watermark motif="veins" position="right" />
-      <PageHeader eyebrow="The guidelines" title="The Reporting Setting in Psychedelic Clinical Trials Guidelines" lead={table.intro} wide>
-        <div class="cluster reveal reveal--fade" style="margin-top: var(--s-6); --reveal-delay: 120ms">
+      <PageHead eyebrow="The guidelines" title="The Reporting Setting in Psychedelic Clinical Trials Guidelines" lead={table.intro} titleReveal="words">
+        <div class="cluster reveal" style="margin-top: var(--s-6); --reveal-delay: 320ms; --reveal-dur: 900ms">
           <Button href={u(pdfs.checklist)}>Printable checklist</Button>
           <Button href={doc} variant="secondary">Explanatory document</Button>
         </div>
-      </PageHeader>
+      </PageHead>
     </div>
 
     <Section wide tight>
@@ -97,8 +99,9 @@ const schema = [
     </Section>
 
     <Section tight>
-      <Citation />
+      <div class="container--reading"><Citation class="reveal reveal--fade" /></div>
     </Section>
   </main>
   <FooterCredit slot="footer-meta" />
+  <MotionFixes />
 </Layout>

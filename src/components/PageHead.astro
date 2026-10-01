@@ -1,0 +1,21 @@
+---
+/**
+ * <PageHead eyebrow title lead titleReveal="words|wipe" />
+ * The design-system PageHeader (same classes, same single <h1>) with a centred 64ch column
+ * and reveal classes on the title and lead — Round 3: reading columns centred on the screen,
+ * headings revealed with words or a wipe, leads with a blur.
+ */
+export interface Props { eyebrow?: string; title: string; lead?: string; titleReveal?: 'words' | 'wipe'; class?: string }
+const { eyebrow, title, lead, titleReveal = 'words', class: cls = '' } = Astro.props;
+const h1Class = titleReveal === 'wipe' ? 'reveal reveal--wipe' : 'reveal-words';
+---
+<div class={['page-header', 'page-header--centered', cls].filter(Boolean).join(' ')}>
+  <div class="container">
+    <div class="page-header__inner">
+      {eyebrow && <p class="eyebrow reveal reveal--fade">{eyebrow}</p>}
+      <h1 class={h1Class} style="--reveal-dur: 1000ms">{title}</h1>
+      {lead && <p class="lead reveal reveal--blur" style="--reveal-delay: 160ms; --reveal-dur: 1000ms">{lead}</p>}
+      <slot />
+    </div>
+  </div>
+</div>

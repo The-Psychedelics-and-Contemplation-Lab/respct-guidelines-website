@@ -5,6 +5,7 @@ import { pdfs, citation } from '../site.config';
 import { siteConfig as site, u, navFor } from '../lib/url';
 import Citation from '../components/Citation.astro';
 import FooterCredit from '../components/FooterCredit.astro';
+import MotionFixes from '../components/MotionFixes.astro';
 import '../styles/site.css';
 
 const entry = await getEntry('docs', 'home');
@@ -58,11 +59,18 @@ const schema = [
          at the top and bottom; the acrostic title sits on the paper at the top left. -->
     <div class="cover">
       <div class="container cover__title">
-        <!-- The parallax layer is a wrapper (not the h1, whose reveal uses its own transform;
-             not .cover__title, which is centred with translateX). The title lags the page
-             (+0.28) while the illustration leads it (−0.12); the script clamps both to ±120 px. -->
-        <div class="cover__title-layer" data-parallax="0.28">
-          <h1 class="acrostic reveal reveal--left" aria-label="Reporting Setting in Psychedelic Clinical Trials">
+        <!-- The parallax layer is a wrapper (not the h1, whose reveal uses its own clip-path;
+             not .cover__title, which is centred with translateX). Measured from the page top
+             (origin "top"), the title moves DOWN inside the cover at 68 % of the scroll speed,
+             so it climbs the screen at a third of the page speed, much slower than the
+             illustration (which leads the page, −0.08), and stays in view until ≈ 87 % of the
+             cover has scrolled by (at 0.55 it would be gone before the half). Its travel is clamped to
+             (cover height − title height − 2 rem): data-parallax-max is set by the script
+             below from the measured heights, so the title can never leave the cover.
+             The paper gradient behind the title lives in the same layer and travels with it. -->
+        <div class="cover__title-layer" data-parallax="0.68" data-parallax-origin="top" data-parallax-max="1400">
+          <div class="cover__fade-left" aria-hidden="true"></div>
+          <h1 class="acrostic reveal reveal--wipe" style="--reveal-dur: 1100ms" aria-label="Reporting Setting in Psychedelic Clinical Trials">
             {words.map((w) => (
               <span class="acrostic__word" aria-hidden="true">
                 <span class={`acrostic__initial acrostic__initial--${w.key}`}>{w.initial}</span>{w.rest}
@@ -82,23 +90,24 @@ const schema = [
           alt={illustrationAlt}
           fetchpriority="high"
           decoding="async"
-          data-parallax="-0.12"
+          data-parallax="-0.08"
         />
-        <div class="cover__fade-left" aria-hidden="true"></div>
       </div>
       <div class="container">
-        <p class="cover__credit">
+        <p class="cover__credit reveal reveal--fade">
           Illustration by <a href="https://natashawigoder.com/" target="_blank" rel="noopener noreferrer">Natasha Wigoder</a>.
         </p>
       </div>
     </div>
 
+    <!-- Reveal treatments on this page: headings wipe, the intro blurs in, the figure is
+         unmasked from the bottom, the pull quote rises further, the grid staggers slowly. -->
     <Section tight>
       <SectionMark label="An international Delphi consensus" accent />
-      <div class="home-intro stack">
-        <div class="prose reveal reveal--fade"><Content /></div>
+      <div class="container--reading home-intro stack">
+        <div class="prose prose--centered reveal reveal--blur" style="--reveal-dur: 1000ms"><Content /></div>
         <Citation class="reveal reveal--fade" />
-        <div class="cluster reveal reveal--fade" style="--reveal-delay: 120ms">
+        <div class="cluster home-intro__actions reveal" style="--reveal-delay: 120ms; --reveal-dur: 900ms">
           <Button href={u('/the-respct-guidelines/')}>The ReSPCT Guidelines</Button>
           <Button href={u('/the-explanatory-document/')} variant="secondary">Explanatory Document</Button>
           <Button href={citation.url} variant="secondary" external>Original Article</Button>
@@ -109,7 +118,7 @@ const schema = [
     <Section band>
       <div class="image-pair home-pair">
         <Figure
-          class="reveal reveal--scale"
+          class="reveal reveal--mask"
           src={u('/images/respct-illustration-detail-800.webp')}
           srcset={`${u('/images/respct-illustration-detail-800.webp')} 800w, ${u('/images/respct-illustration-detail-1600.webp')} 1600w`}
           sizes="(min-width: 40em) 50vw, 100vw"
@@ -120,7 +129,7 @@ const schema = [
           drift
           caption="The dosing room, inside the cap. Illustration by Natasha Wigoder."
         />
-        <blockquote class="pullquote reveal" style="--reveal-delay: 160ms">
+        <blockquote class="pullquote reveal reveal--rise-lg" style="--reveal-delay: 160ms">
           We encourage study teams to report each item in publications of clinical trials involving psychedelic drugs, either in the main article or as supplementary information.
           <cite><a href={u('/the-explanatory-document/')}>The ReSPCT Guidelines Explained</a>, introduction</cite>
         </blockquote>
@@ -129,15 +138,15 @@ const schema = [
 
     <Section tight ariaLabelledby="downloads" watermark="veins" watermarkPosition="right" watermarkInk>
       <SectionMark label="Resources" />
-      <h2 id="downloads" class="reveal home-downloads__title">Downloads</h2>
-      <div class="grid grid--2 reveal-group home-downloads" style="margin-top: var(--s-8)">
-        <div class="card">
+      <h2 id="downloads" class="reveal reveal--wipe home-downloads__title" style="--reveal-dur: 900ms">Downloads</h2>
+      <div class="grid grid--2 reveal-group reveal-group--slow home-downloads" style="margin-top: var(--s-8)">
+        <div class="card card--lift">
           <p class="eyebrow">PDF</p>
           <h3>Explanatory document</h3>
           <p>Each of the 30 items explained, with suggested reporting questions, measurement tools and expert quotes from the Delphi process.</p>
           <p><Button href={u(pdfs.explanatory)} variant="primary" size="small">Download the explanatory document</Button></p>
         </div>
-        <div class="card">
+        <div class="card card--lift">
           <p class="eyebrow">PDF</p>
           <h3>Printable checklist</h3>
           <p>A fillable, printable checklist of the 30 ReSPCT items to complete and submit alongside a psychedelic clinical trial publication.</p>
@@ -147,4 +156,53 @@ const schema = [
     </Section>
   </main>
   <FooterCredit slot="footer-meta" />
+  <MotionFixes />
 </Layout>
+
+<script>
+  // Cover: clamp the title's parallax travel so it never leaves the cover's bottom edge.
+  // data-parallax-max = cover height − (title's natural top inside the cover) − title height − 2 rem,
+  // measured on load and resize. The design-system parallax script reads the attribute on every
+  // update; a synthetic resize event makes it re-measure and apply the new clamp immediately.
+  const cover = document.querySelector<HTMLElement>('.cover');
+  const layer = document.querySelector<HTMLElement>('.cover__title-layer');
+  if (cover && layer) {
+    const setMax = () => {
+      const t = layer.style.transform;
+      layer.style.transform = '';                       // measure the natural position
+      const top = layer.getBoundingClientRect().top - cover.getBoundingClientRect().top;
+      layer.style.transform = t;
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      const max = Math.max(0, Math.round(cover.offsetHeight - top - layer.offsetHeight - 2 * rem));
+      if (layer.dataset.parallaxMax !== String(max)) {
+        layer.dataset.parallaxMax = String(max);
+        window.dispatchEvent(new Event('resize'));
+      }
+    };
+    setMax();
+    window.addEventListener('load', setMax);
+    window.addEventListener('resize', setMax);
+    // fonts settle after first paint: the title's height may change
+    document.fonts?.ready.then(setMax);
+
+    // The sticky header is translucent (92 % paper + blur), so a display-size title sliding
+    // beneath it would show through as a ghost. Clip the title container at the header's
+    // bottom edge instead: the title disappears cleanly under the header, line by line.
+    const title = document.querySelector<HTMLElement>('.cover__title');
+    const header = document.querySelector<HTMLElement>('.site-header');
+    const wide = window.matchMedia('(min-width: 60em)');
+    let ticking = false;
+    const clip = () => {
+      ticking = false;
+      if (!title) return;
+      if (!wide.matches) { title.style.clipPath = ''; return; }
+      const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
+      const top = Math.max(0, headerBottom - title.getBoundingClientRect().top);
+      title.style.clipPath = top > 0 ? `inset(${top.toFixed(1)}px 0 0 0)` : '';
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(clip); } };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    clip();
+  }
+</script>

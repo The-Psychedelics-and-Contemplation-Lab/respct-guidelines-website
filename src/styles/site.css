@@ -58,30 +58,43 @@
 .acrostic__initial--c { color: #3D6E68; }
 .acrostic__initial--t { color: #437570; }
 
-.cover__title { padding-block: var(--s-10) var(--s-2); }
+.cover__title { padding-block: var(--s-12) var(--s-2); }
+.cover__title-layer { position: relative; }
+.cover__fade-left { display: none; }
+.acrostic { position: relative; z-index: 1; }
 .cover__credit { margin: var(--s-3) 0 0; font-family: var(--font-sans); font-size: var(--fs-small); color: var(--ink-muted); }
 
 @media (min-width: 60em) {
-  /* Wide screens: the title sits on the paper at the top left of the illustration.
-     Besides the top fade, a soft paper gradient runs in from the left edge behind the
-     title so the darker greens keep ≥ 4.5:1 on the illustration's own paper tone. */
+  /* Wide screens: the title sits on the paper at the top left of the illustration and
+     drifts down inside the cover as the page scrolls (data-parallax on .cover__title-layer).
+     A soft paper gradient sits in the same layer, behind the title, running in from the
+     left edge of the viewport and fading out above and below: it travels with the title,
+     so the darker greens keep ≥ 4.5:1 wherever the title is over the drawing. */
   .cover__title {
     position: absolute;
     z-index: 2;
-    top: 0;
+    top: 0; bottom: 0;        /* spans the whole cover: the box the header clip (page script) is applied to */
     left: 50%;
     transform: translateX(-50%);
     width: min(100% - 2 * var(--gutter), var(--container));
-    padding: var(--s-10) 0 0;
+    padding: 0;
     pointer-events: none;
   }
+  /* The parallax script (origin "top") starts moving a layer only once its natural top
+     reaches the viewport top. The layer's box therefore starts at the page top, behind the
+     sticky header (negative margin, same padding inside), so the title drifts at a constant
+     speed from the very first pixel of scrolling instead of after a 7 rem dead zone. */
+  .cover__title-layer { margin-top: calc(-1 * var(--header-h)); padding-top: calc(var(--header-h) + var(--s-12)); }
   .cover__frame .cover__img { position: relative; z-index: 0; }
   .cover__fade-left {
-    position: absolute; z-index: 1; pointer-events: none;
-    top: 0; left: 0; width: 56%; height: 62%;
-    background: linear-gradient(to right, var(--paper) 0%, var(--paper) 24%, rgba(251, 250, 248, 0.8) 40%, rgba(251, 250, 248, 0) 100%);
-    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+    display: block;
+    position: absolute; z-index: 0; pointer-events: none;
+    top: calc(var(--header-h) + var(--s-12) - 6rem); bottom: -7rem;
+    /* from the viewport's left edge to 30 rem past the column's left edge; the title is ≈ 16 rem wide */
+    left: calc(50% - 50vw); width: calc(50vw - 50% + 34rem);
+    background: linear-gradient(to right, var(--paper) calc(100% - 20rem), rgba(251, 250, 248, 0.7) calc(100% - 15rem), rgba(251, 250, 248, 0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 78%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 78%, transparent);
   }
   .cover__credit { margin-top: var(--s-4); }
 
@@ -104,17 +117,39 @@
   }
 }
 
-.home-intro { max-width: var(--measure); margin-inline: auto; }
+/* --- Home: centred reading column, figure + pull quote, downloads ------------- */
 .home-intro .cluster { margin-top: var(--s-8); }
+.home-intro__actions { justify-content: center; }
 .home-pair { align-items: center; }
 .home-pair .pullquote { margin-top: var(--s-16); }
 .home-pair .pullquote cite a { color: inherit; }
 @media (max-width: 40em) { .home-pair .pullquote { margin-top: var(--s-8); } }
 .home-downloads__title { text-align: center; }
-.citation { font-family: var(--font-sans); font-size: var(--fs-ui); line-height: 1.55; color: var(--ink-muted); max-width: var(--measure); }
+.citation { font-family: var(--font-sans); font-size: var(--fs-ui); line-height: 1.55; color: var(--ink-muted); max-width: var(--measure); margin-inline: auto; }
 .citation em { font-style: italic; }
 
-/* --- Page headers with a motif behind them (guidelines: veins; explanatory: rings) --- */
+/* reveal--mask on a drifting Figure: the parallax script owns the image's `transform`
+   (inline), so the settle-from-a-zoom uses the independent `scale` property instead. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .figure.reveal--mask img { scale: 1.08; transition: scale calc(var(--reveal-dur, 1100ms) + 400ms) var(--ease); }
+  html.js .figure.reveal--mask.is-visible img { scale: 1; }
+}
+
+/* Lifting cards (downloads, contact): 2 px up with the soft shadow; text is never dimmed. */
+.card--lift:hover, .card--lift:focus-within { border-color: var(--accent); box-shadow: var(--shadow-card), 0 14px 32px -20px rgba(43, 42, 39, 0.28); }
+.card--lift:hover h2, .card--lift:hover h3 { color: var(--accent); }
+@media (prefers-reduced-motion: no-preference) {
+  .card--lift { transition: transform 300ms var(--ease), box-shadow 300ms var(--ease), border-color var(--dur) var(--ease); }
+  /* the reveal-group rule (html.js .reveal-group.is-visible > *) sets transform: none; outrank it */
+  .card--lift:hover, .card--lift:focus-within,
+  html.js .reveal-group.is-visible > .card--lift:hover, html.js .reveal-group.is-visible > .card--lift:focus-within { transform: translateY(-2px); }
+}
+
+/* --- Page headers: centred reading column; motif behind them (guidelines: veins; explanatory: rings) --- */
+.page-header--centered .container, .page-header--centered .container--wide { width: min(100% - 2 * var(--gutter), var(--container)); }
+.page-header--centered .page-header__inner { max-width: 64ch; margin-inline: auto; text-align: center; }
+.page-header--centered .lead { margin-inline: auto; }
+.page-header--centered .cluster { justify-content: center; }
 .page-header-wm .watermark--right { top: -17rem; right: -6%; }
 .page-header-wm--subtle .watermark { opacity: 0.09; --wm-size: 40rem; top: -12rem; }
 @media (max-width: 59.99em) { .page-header-wm .watermark { top: -9rem; right: -10%; } }
@@ -217,6 +252,8 @@
   .toc__details > summary { pointer-events: none; }
   .toc__details > summary::before { display: none; }
   .with-sidebar { grid-template-columns: 17rem minmax(0, 1fr); }
+  /* the reading column is centred in the space beside the table of contents */
+  .doc__body { width: min(100%, var(--measure)); margin-inline: auto; }
   .doc-intro__art { float: right; width: min(38%, 18rem); margin: 0 0 var(--s-6) var(--s-8); }
   .doc__body::after { content: ""; display: table; clear: both; }
 }
@@ -228,6 +265,7 @@
 }
 
 /* --- Contact -------------------------------------------------------------- */
+.contact-intro { text-align: center; }
 .contact-grid { display: grid; gap: var(--s-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
 .contact-grid .card .muted { font-family: var(--font-sans); font-size: var(--fs-small); }
 .contact-grid .card a { overflow-wrap: anywhere; }
@@ -237,6 +275,7 @@
   .cover__frame::before, .cover__frame::after, .cover__fade-left { display: none; }
   .cover__title { position: static; transform: none; width: auto; }
   .cover__title-layer, .cover__img { transform: none !important; }
+  .card--lift { box-shadow: none; }
   .cover__frame, .cover__img { -webkit-mask-image: none; mask-image: none; }
   .cover__frame { max-height: 60vh; }
   .guidelines-table .section-row td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }

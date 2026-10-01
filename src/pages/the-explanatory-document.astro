@@ -1,11 +1,13 @@
 ---
-import { Layout, PageHeader, Section, Button, Watermark } from '@pcl/design-system';
+import { Layout, Section, Button, Watermark } from '@pcl/design-system';
+import PageHead from '../components/PageHead.astro';
 import { RESPCT_SECTIONS } from '@pcl/design-system';
 import { getEntry, render } from 'astro:content';
 import { pdfs, citation } from '../site.config';
 import { siteConfig as site, u, navFor } from '../lib/url';
 import toc from '../content/explanatory-toc.json';
 import FooterCredit from '../components/FooterCredit.astro';
+import MotionFixes from '../components/MotionFixes.astro';
 import '../styles/site.css';
 
 const entry = await getEntry('docs', 'explanatory-document');
@@ -74,11 +76,11 @@ const schema = [
   <main id="main" class="doc">
     <div class="has-watermark page-header-wm page-header-wm--subtle">
       <Watermark motif="rings" position="right" />
-      <PageHeader eyebrow="Explanatory document" title={entry!.data.title}>
-        <div class="cluster" style="margin-top: var(--s-6)">
+      <PageHead eyebrow="Explanatory document" title={entry!.data.title} titleReveal="wipe">
+        <div class="cluster reveal" style="margin-top: var(--s-6); --reveal-delay: 200ms; --reveal-dur: 900ms">
           <Button href={u(pdfs.explanatory)}>Explanatory document PDF</Button>
         </div>
-      </PageHeader>
+      </PageHead>
     </div>
 
     <Section>
@@ -103,7 +105,7 @@ const schema = [
         </nav>
 
         <article class="doc__body">
-          <figure class="doc-intro__art">
+          <figure class="doc-intro__art reveal reveal--mask">
             <img
               src={u('/images/respct-illustration-detail-800.webp')}
               srcset={`${u('/images/respct-illustration-detail-800.webp')} 800w, ${u('/images/respct-illustration-detail-1600.webp')} 1600w`}
@@ -123,6 +125,7 @@ const schema = [
     </Section>
   </main>
   <FooterCredit slot="footer-meta" />
+  <MotionFixes />
 </Layout>
 
 <script>

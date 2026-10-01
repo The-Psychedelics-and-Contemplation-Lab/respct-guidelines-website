@@ -1,10 +1,12 @@
 ---
-import { Layout, PageHeader, Section } from '@pcl/design-system';
+import { Layout, Section } from '@pcl/design-system';
+import PageHead from '../components/PageHead.astro';
 import { getEntry, render } from 'astro:content';
 import { citation } from '../site.config';
 import { siteConfig as site, navFor } from '../lib/url';
 import Citation from '../components/Citation.astro';
 import FooterCredit from '../components/FooterCredit.astro';
+import MotionFixes from '../components/MotionFixes.astro';
 import '../styles/site.css';
 
 const entry = await getEntry('docs', 'contact');
@@ -35,14 +37,14 @@ const schema = [
   nav={nav}
 >
   <main id="main">
-    <PageHeader eyebrow="Contact" title={entry!.data.title}>
-      <div class="prose lead" style="margin-top: var(--s-4)"><Content /></div>
-    </PageHeader>
+    <PageHead eyebrow="Contact" title={entry!.data.title} titleReveal="words">
+      <div class="prose prose--centered lead reveal reveal--blur" style="margin-top: var(--s-4); --reveal-delay: 160ms; --reveal-dur: 1000ms"><Content /></div>
+    </PageHead>
     <Section>
-      <p class="muted reveal reveal--fade" style="max-width: var(--measure)">Write to any of the authors of the ReSPCT Delphi consensus. Questions about the guidelines, requests to reuse the materials and reports of errors are all welcome.</p>
-      <div class="contact-grid reveal-group" style="margin-top: var(--s-8)">
+      <p class="muted container--reading contact-intro reveal reveal--fade" style="--reveal-dur: 900ms">Write to any of the authors of the ReSPCT Delphi consensus. Questions about the guidelines, requests to reuse the materials and reports of errors are all welcome.</p>
+      <div class="contact-grid reveal-group reveal-group--slow" style="margin-top: var(--s-8)">
         {people.map((p) => (
-          <div class="card">
+          <div class="card card--lift">
             <h2>{p.name}</h2>
             <p class="muted">{p.role}<br />{p.org}</p>
             <p><a href={`mailto:${p.email}?subject=${subject}`}>{p.email}</a></p>
@@ -51,8 +53,9 @@ const schema = [
       </div>
     </Section>
     <Section band tight>
-      <Citation />
+      <div class="container--reading"><Citation class="reveal reveal--fade" /></div>
     </Section>
   </main>
   <FooterCredit slot="footer-meta" />
+  <MotionFixes />
 </Layout>
