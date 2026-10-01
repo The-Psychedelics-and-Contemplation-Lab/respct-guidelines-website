@@ -1,0 +1,101 @@
+---
+import { Layout, PageHeader, Section, Button } from '@pcl/design-system';
+import { RESPCT_SECTIONS } from '@pcl/design-system';
+import { pdfs, citation } from '../site.config';
+import { siteConfig as site, u, navFor } from '../lib/url';
+import Citation from '../components/Citation.astro';
+import table from '../content/guidelines-table.json';
+import FooterCredit from '../components/FooterCredit.astro';
+import '../styles/site.css';
+
+const nav = navFor('/the-respct-guidelines/');
+type Key = keyof typeof RESPCT_SECTIONS;
+const doc = u('/the-explanatory-document/');
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'MedicalWebPage',
+    name: 'The ReSPCT Guidelines — 30 reporting items',
+    url: `${site.url}/the-respct-guidelines/`,
+    about: { '@type': 'MedicalGuideline', name: 'Reporting of Setting in Psychedelic Clinical Trials (ReSPCT) Guidelines' },
+    citation: {
+      '@type': 'ScholarlyArticle',
+      headline: citation.title,
+      identifier: `https://doi.org/${citation.doi}`,
+      url: citation.url,
+      isPartOf: { '@type': 'Periodical', name: citation.journal },
+      datePublished: citation.year,
+    },
+    publisher: { '@type': 'Organization', name: site.name, url: site.url },
+  },
+  site.organizationSchema!,
+];
+---
+<Layout
+  site={site}
+  page={{
+    title: 'The 30 ReSPCT items — The ReSPCT Guidelines',
+    description: 'The 30 ReSPCT reporting items in four sections (physical environment, dosing session procedure, therapeutic framework and protocol, subjective experiences), each linked to its explanation.',
+    path: '/the-respct-guidelines/',
+    schema,
+  }}
+  nav={nav}
+>
+  <main id="main">
+    <PageHeader eyebrow="The guidelines" title="The Reporting Setting in Psychedelic Clinical Trials Guidelines" lead={table.intro} wide>
+      <div class="cluster" style="margin-top: var(--s-6)">
+        <Button href={u(pdfs.checklist)}>Printable checklist</Button>
+        <Button href={doc} variant="secondary">Explanatory document</Button>
+      </div>
+    </PageHeader>
+
+    <Section wide tight>
+      <ul class="section-legend" aria-label="The four sections of the guidelines">
+        {table.sections.map((s) => (
+          <li style={`--sec:${RESPCT_SECTIONS[s.key as Key].fill};--sec-text:${RESPCT_SECTIONS[s.key as Key].text}`}>
+            <span class="section-mark" aria-hidden="true"></span>{s.name}
+          </li>
+        ))}
+      </ul>
+      <div class="table-wrap guidelines-table" style="margin-top: var(--s-4)">
+        <table>
+          <caption class="visually-hidden">The 30 ReSPCT items. Each item name links to its explanation in the explanatory document.</caption>
+          <colgroup>
+            <col class="col-item" />
+            <col class="col-number" />
+            <col />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">{table.columns[0]}</th>
+              <th scope="col" class="num">{table.columns[1]}</th>
+              <th scope="col">{table.columns[2]}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {table.sections.map((s) => (
+              <>
+                <tr class="section-row" style={`--sec:${RESPCT_SECTIONS[s.key as Key].fill};--sec-text:${RESPCT_SECTIONS[s.key as Key].text}`}>
+                  <td colspan="3"><span class="section-mark" aria-hidden="true"></span>{s.name}</td>
+                </tr>
+                {s.items.map((it) => (
+                  <tr class="item-row" style={`--sec:${RESPCT_SECTIONS[s.key as Key].fill}`}>
+                    <td><a href={`${doc}#item${it.number}`}>{it.name}</a></td>
+                    <td class="num">{it.number}</td>
+                    <td>{it.details}</td>
+                  </tr>
+                ))}
+              </>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Section>
+
+    <Section tight>
+      <Citation />
+    </Section>
+  </main>
+  <FooterCredit slot="footer-meta" />
+</Layout>

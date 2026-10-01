@@ -1,0 +1,58 @@
+---
+import { Layout, PageHeader, Section } from '@pcl/design-system';
+import { getEntry, render } from 'astro:content';
+import { citation } from '../site.config';
+import { siteConfig as site, navFor } from '../lib/url';
+import Citation from '../components/Citation.astro';
+import FooterCredit from '../components/FooterCredit.astro';
+import '../styles/site.css';
+
+const entry = await getEntry('docs', 'contact');
+const { Content } = await render(entry!);
+const nav = navFor('/contact/');
+
+// The three authors who received messages from the old site's contact form.
+const people = [
+  { name: 'Chloé Pronovost-Morgan', role: 'First author, ReSPCT Delphi study', org: 'McGill University', email: 'chloe.pronovost-morgan@mail.mcgill.ca' },
+  { name: 'Kyle T. Greenway', role: 'Senior author, Psychedelics & Contemplation Lab', org: 'McGill University · Lady Davis Institute, Jewish General Hospital', email: 'kyle.greenway@mcgill.ca' },
+  { name: 'Leor Roseman', role: 'Senior author', org: 'University of Exeter', email: 'l.roseman@exeter.ac.uk' },
+];
+const subject = encodeURIComponent('[The ReSPCT Guidelines Website query]');
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: 'Contact — The ReSPCT Guidelines',
+    url: `${site.url}/contact/`,
+    about: { '@type': 'ScholarlyArticle', headline: citation.title, identifier: `https://doi.org/${citation.doi}` },
+  },
+  site.organizationSchema!,
+];
+---
+<Layout
+  site={site}
+  page={{ title: 'Contact — The ReSPCT Guidelines', description: entry!.data.description, path: '/contact/', schema }}
+  nav={nav}
+>
+  <main id="main">
+    <PageHeader eyebrow="Contact" title={entry!.data.title}>
+      <div class="prose lead" style="margin-top: var(--s-4)"><Content /></div>
+    </PageHeader>
+    <Section>
+      <p class="muted" style="max-width: var(--measure)">Write to any of the authors of the ReSPCT Delphi consensus. Questions about the guidelines, requests to reuse the materials and reports of errors are all welcome.</p>
+      <div class="contact-grid" style="margin-top: var(--s-8)">
+        {people.map((p) => (
+          <div class="card">
+            <h2>{p.name}</h2>
+            <p class="muted">{p.role}<br />{p.org}</p>
+            <p><a href={`mailto:${p.email}?subject=${subject}`}>{p.email}</a></p>
+          </div>
+        ))}
+      </div>
+    </Section>
+    <Section band tight>
+      <Citation />
+    </Section>
+  </main>
+  <FooterCredit slot="footer-meta" />
+</Layout>

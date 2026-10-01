@@ -1,0 +1,203 @@
+/* ==========================================================================
+   ReSPCT Guidelines — page-specific layout only.
+   Tokens, typography, buttons, tables and print rules come from
+   @pcl/design-system and are never overridden here.
+   ========================================================================== */
+
+/* --- Section colours (fills for bands, darkened variants for text) ------- */
+:root {
+  --sec-physical: #5E9591;    --sec-physical-text: #4E7B78;
+  --sec-dosing: #8A7B4F;      --sec-dosing-text: #807249;
+  --sec-framework: #6B7F9E;   --sec-framework-text: #627491;
+  --sec-subjective: #8F6A62;  --sec-subjective-text: #8F6A62;
+}
+
+/* --- Home: full-width cover with the square illustration shown in full ---- */
+.cover { position: relative; width: 100%; background: var(--paper); --cover-max: 58rem; }
+.cover__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;              /* the illustration is 2480 × 2481: shown whole, never cropped */
+}
+.cover__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;              /* letterboxed on cream, never cropped */
+  object-position: center;
+}
+/* Long fades to the cream page colour: 0→13 % of the height at the top, 0→17 % at the bottom */
+.cover__frame::before,
+.cover__frame::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  pointer-events: none;
+}
+.cover__frame::before { top: 0; height: 13%; background: linear-gradient(to bottom, var(--paper), rgba(251, 250, 248, 0)); }
+.cover__frame::after { bottom: 0; height: 17%; background: linear-gradient(to top, var(--paper), rgba(251, 250, 248, 0)); }
+
+/* Acrostic title — one word per line, coloured initials */
+.acrostic {
+  font-size: clamp(2rem, 4.2vw, 3rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  max-width: none;
+  text-wrap: initial;
+}
+.acrostic__word { display: block; white-space: nowrap; }
+.acrostic__initial { font-weight: 700; }
+.acrostic__initial--re { color: #1E3B37; }
+.acrostic__initial--s { color: #2A4F4A; }
+.acrostic__initial--p { color: #35635E; }
+.acrostic__initial--c { color: #40766F; }
+.acrostic__initial--t { color: #477D78; }
+
+.cover__title { padding-block: var(--s-8) var(--s-2); }
+.cover__credit { margin-top: var(--s-3); font-family: var(--font-sans); font-size: var(--fs-small); color: var(--ink-muted); }
+
+@media (min-width: 48em) {
+  /* On wide screens the title sits on the empty paper at the top left of the
+     illustration, as on the original site; the frame is capped in height and
+     the square image is centred inside it. */
+  .cover__frame { aspect-ratio: auto; height: min(100vw, var(--cover-max)); }
+  .cover__title {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(100% - 2 * var(--gutter), var(--container));
+    padding: var(--s-8) 0 0;
+    pointer-events: none;
+  }
+  .cover__title a { pointer-events: auto; }
+}
+
+.home-intro { max-width: var(--measure); }
+.home-intro .cluster { margin-top: var(--s-8); }
+.citation { font-family: var(--font-sans); font-size: var(--fs-ui); line-height: 1.55; color: var(--ink-muted); max-width: var(--measure); }
+.citation em { font-style: italic; }
+
+/* --- Guidelines table ---------------------------------------------------- */
+.guidelines-table col.col-item { width: 30%; }
+.guidelines-table col.col-number { width: 6rem; }
+.guidelines-table td.num { text-align: center; font-variant-numeric: tabular-nums; }
+.guidelines-table th.num { text-align: center; }
+.guidelines-table .section-row td {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--fs-ui);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding-block: var(--s-3);
+  background: color-mix(in srgb, var(--sec, var(--accent)) 12%, var(--card));
+  border-left: 5px solid var(--sec, var(--accent));
+  color: var(--ink);   /* ink on the 12 % tint: the darkened section colours would fall to 4.1:1 here */
+}
+.guidelines-table tbody tr:hover.section-row td { background: color-mix(in srgb, var(--sec, var(--accent)) 12%, var(--card)); }
+.guidelines-table .item-row td:first-child { border-left: 5px solid color-mix(in srgb, var(--sec, var(--accent)) 45%, transparent); }
+.guidelines-table .item-row a { font-weight: 600; }
+.guidelines-table thead th:first-child { border-left: 5px solid transparent; }
+.guidelines-table .section-row td .section-mark { display: inline-block; width: 0.7em; height: 0.7em; border-radius: 2px; background: var(--sec); margin-right: var(--s-2); vertical-align: -0.02em; }
+
+/* The design-system's .table-wrap scrolls horizontally, which makes it the sticky
+   container of the <thead>; on wide screens the table fits, so let the wrap overflow
+   and the header sticks below the site header while the page scrolls. */
+@media (min-width: 60em) {
+  .guidelines-table { overflow: visible; }
+}
+/* Narrow screens: one block per item (number · name / details) instead of a 3-column grid */
+@media (max-width: 40em) {
+  .guidelines-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .guidelines-table colgroup { display: none; }
+  .guidelines-table table, .guidelines-table tbody, .guidelines-table tr, .guidelines-table td { display: block; }
+  .guidelines-table .section-row td { border-left-width: 5px; }
+  .guidelines-table .item-row {
+    display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); column-gap: var(--s-2);
+    padding: var(--s-3) var(--s-4) var(--s-3) var(--s-3);
+    border-bottom: 1px solid var(--rule);
+    border-left: 5px solid color-mix(in srgb, var(--sec, var(--accent)) 45%, transparent);
+  }
+  .guidelines-table .item-row:last-child { border-bottom: 0; }
+  .guidelines-table .item-row td { border: 0; padding: 0; }
+  .guidelines-table .item-row td:first-child { grid-column: 2; grid-row: 1; border-left: 0; }
+  .guidelines-table .item-row td.num { grid-column: 1; grid-row: 1 / span 2; text-align: left; font-weight: 700; color: var(--ink-muted); }
+  .guidelines-table .item-row td:last-child { grid-column: 2; grid-row: 2; color: var(--ink-muted); margin-top: 2px; }
+  .guidelines-table tbody tr:hover td { background: transparent; }
+}
+
+/* Section legend (chips) */
+.section-legend { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); list-style: none; padding: 0; margin: 0; font-family: var(--font-sans); font-size: var(--fs-small); }
+.section-legend li { display: inline-flex; align-items: center; gap: var(--s-2); color: var(--sec-text); font-weight: 600; }
+.section-legend .section-mark { width: 0.8em; height: 0.8em; border-radius: 2px; background: var(--sec); display: inline-block; }
+
+/* --- Explanatory document: sticky table of contents + reading column ------ */
+.with-sidebar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-12);
+  align-items: start;
+}
+.toc {
+  position: sticky;
+  top: calc(var(--header-h) + 2rem);   /* 2rem below the sticky site header */
+  max-height: calc(100dvh - var(--header-h) - 3rem);
+  overflow-y: auto;
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  padding-right: var(--s-2);
+}
+.toc h2 { font-family: var(--font-sans); font-size: var(--fs-ui); font-weight: 600; margin: 0; }
+.toc__details { border: 0; padding: 0; background: none; border-radius: 0; }
+.toc__details > summary { padding: 0; margin: 0 0 var(--s-3); }
+.toc__details[open] > summary { margin-bottom: var(--s-3); }
+.toc ul { list-style: none; margin: 0; padding: 0; }
+.toc__details > ul > li + li { margin-top: var(--s-4); }
+.toc__group { display: block; font-weight: 700; font-size: var(--fs-eyebrow); letter-spacing: 0.06em; text-transform: uppercase; color: var(--sec-text, var(--ink)); padding-left: var(--s-3); border-left: 3px solid var(--sec, var(--rule)); margin-bottom: var(--s-2); }
+.toc ul ul li { margin: 0; }
+.toc ul ul a { display: block; padding: 3px 0 3px var(--s-3); color: var(--ink); text-decoration: none; border-left: 3px solid transparent; }
+.toc ul ul a:hover { color: var(--accent); border-left-color: var(--rule); }
+.toc__refs { display: block; font-weight: 600; padding-left: var(--s-3); text-decoration: none; }
+.toc__refs:hover { color: var(--accent-hover); }
+
+.doc-intro__art { max-width: 18rem; margin: 0 auto var(--s-8); }
+.doc-intro__art img { border-radius: var(--radius-card); }
+
+.doc .prose > h2 { padding-top: var(--s-4); border-top: 1px solid var(--rule); }
+.doc .prose > h2:first-child { padding-top: 0; border-top: 0; }
+.doc .prose > h4 { font-weight: 400; font-style: italic; color: var(--ink-muted); font-size: var(--fs-h4); }
+.doc .prose > p > strong:only-child { font-family: var(--font-sans); font-size: var(--fs-ui); letter-spacing: 0.01em; }
+.doc .prose > ul li { font-size: 1.0625rem; }
+.doc .prose > ul ul { margin-top: var(--s-2); }
+.doc .prose > h2 + h3 { margin-top: var(--s-6); }
+
+@media (min-width: 48.9em) { /* 782 px: side by side above, stacked below */
+  .toc__details > summary { pointer-events: none; }
+  .toc__details > summary::before { display: none; }
+  .with-sidebar { grid-template-columns: 17rem minmax(0, 1fr); }
+  .doc-intro__art { float: right; width: min(38%, 18rem); margin: 0 0 var(--s-6) var(--s-8); }
+  .doc__body::after { content: ""; display: table; clear: both; }
+}
+@media (max-width: 48.89em) {
+  .toc { position: static; max-height: none; padding: var(--s-3) var(--s-4); border: 1px solid var(--rule); border-radius: var(--radius-card); background: var(--card); }
+  .toc__details > summary { cursor: pointer; }
+  .toc__details > summary h2 { display: inline; }
+  .toc__details:not([open]) > summary { margin-bottom: 0; }
+}
+
+/* --- Contact -------------------------------------------------------------- */
+.contact-grid { display: grid; gap: var(--s-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+.contact-grid .card .muted { font-family: var(--font-sans); font-size: var(--fs-small); }
+.contact-grid .card a { overflow-wrap: anywhere; }
+
+/* --- Print ---------------------------------------------------------------- */
+@media print {
+  .cover__frame::before, .cover__frame::after { display: none; }
+  .cover__title { position: static; transform: none; width: auto; }
+  .guidelines-table .section-row td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .doc-intro__art { display: none; }
+  .doc .prose { max-width: none; }
+  .doc .prose > h4 { color: #000; }
+  .toc__details { display: none; }
+}

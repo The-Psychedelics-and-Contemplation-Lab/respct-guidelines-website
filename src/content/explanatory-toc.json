@@ -1,0 +1,138 @@
+[
+  {
+    "group": "Physical Environment"
+  },
+  {
+    "href": "#item1",
+    "label": "Item 1: Location"
+  },
+  {
+    "href": "#item2",
+    "label": "Item 2: Ambiance"
+  },
+  {
+    "href": "#item3",
+    "label": "Item 3: Access to nature"
+  },
+  {
+    "href": "#item4",
+    "label": "Item 4: Objects and decorations"
+  },
+  {
+    "href": "#item5",
+    "label": "Item 5: Lighting"
+  },
+  {
+    "href": "#item6",
+    "label": "Item 6: Sensory reduction"
+  },
+  {
+    "href": "#item7",
+    "label": "Item 7: Bathroom facilities"
+  },
+  {
+    "group": "Dosing Session Procedure"
+  },
+  {
+    "href": "#item8",
+    "label": "Item 8: Number and roles of people present"
+  },
+  {
+    "href": "#item9",
+    "label": "Item 9: Positioning"
+  },
+  {
+    "href": "#item10",
+    "label": "Item 10: Focus and main activities"
+  },
+  {
+    "href": "#item11",
+    "label": "Item 11: Music or soundscape"
+  },
+  {
+    "href": "#item12",
+    "label": "Item 12: Interpersonal interventions"
+  },
+  {
+    "href": "#item13",
+    "label": "Item 13: Participant autonomy, control and agency"
+  },
+  {
+    "href": "#item14",
+    "label": "Item 14: Dosing regimen"
+  },
+  {
+    "href": "#item15",
+    "label": "Item 15: Medical and experimental procedures or assessments"
+  },
+  {
+    "href": "#item16",
+    "label": "Item 16: Pre- and post-dosing protocol"
+  },
+  {
+    "href": "#item17",
+    "label": "Item 17: Potential disturbances or interruptions"
+  },
+  {
+    "group": "Therapeutic Framework and Protocol"
+  },
+  {
+    "href": "#item18",
+    "label": "Item 18: Therapeutic/guiding approach"
+  },
+  {
+    "href": "#item19",
+    "label": "Item 19: Narrative framing"
+  },
+  {
+    "href": "#item20",
+    "label": "Item 20: Number of sessions"
+  },
+  {
+    "href": "#item21",
+    "label": "Item 21: Preparation protocol"
+  },
+  {
+    "href": "#item22",
+    "label": "Item 22: Integration protocol"
+  },
+  {
+    "href": "#item23",
+    "label": "Item 23: Additional support/follow-up"
+  },
+  {
+    "href": "#item24",
+    "label": "Item 24: Study personnel qualifications"
+  },
+  {
+    "href": "#item25",
+    "label": "Item 25: Cultural competence and safety"
+  },
+  {
+    "group": "Subjective Experiences"
+  },
+  {
+    "href": "#item26",
+    "label": "Item 26: Therapeutic alliance"
+  },
+  {
+    "href": "#item27",
+    "label": "Item 27: Trust"
+  },
+  {
+    "href": "#item28",
+    "label": "Item 28: Physical comfort"
+  },
+  {
+    "href": "#item29",
+    "label": "Item 29: Physical safety"
+  },
+  {
+    "href": "#item30",
+    "label": "Item 30: Psychological and cultural safety"
+  },
+  {
+    "href": "#References",
+    "label": "References"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "name": "respct-guidelines-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check:html": "node scripts/check-html.mjs",
+    "update-design": "npm update @pcl/design-system"
+  },
+  "dependencies": {
+    "@astrojs/markdown-satteri": "^0.4.2",
+    "@pcl/design-system": "github:The-Psychedelics-and-Contemplation-Lab/design-system#main",
+    "astro": "^7.3.5"
+  }
+}

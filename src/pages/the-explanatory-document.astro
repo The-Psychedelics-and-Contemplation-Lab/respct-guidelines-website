@@ -1,0 +1,134 @@
+---
+import { Layout, PageHeader, Section, Button } from '@pcl/design-system';
+import { RESPCT_SECTIONS } from '@pcl/design-system';
+import { getEntry, render } from 'astro:content';
+import { pdfs, citation } from '../site.config';
+import { siteConfig as site, u, navFor } from '../lib/url';
+import toc from '../content/explanatory-toc.json';
+import FooterCredit from '../components/FooterCredit.astro';
+import '../styles/site.css';
+
+const entry = await getEntry('docs', 'explanatory-document');
+const { Content } = await render(entry!);
+const nav = navFor('/the-explanatory-document/');
+
+// Group the table of contents (kept verbatim from the original site) by section.
+type Group = { name: string; key: keyof typeof RESPCT_SECTIONS; items: { href: string; label: string }[] };
+const keys: Record<string, keyof typeof RESPCT_SECTIONS> = {
+  'Physical Environment': 'physical',
+  'Dosing Session Procedure': 'dosing',
+  'Therapeutic Framework and Protocol': 'framework',
+  'Subjective Experiences': 'subjective',
+};
+const groups: Group[] = [];
+let refs: { href: string; label: string } | undefined;
+for (const row of toc as ({ group: string } | { href: string; label: string })[]) {
+  if ('group' in row) groups.push({ name: row.group, key: keys[row.group], items: [] });
+  else if (row.href === '#References') refs = row;
+  else groups[groups.length - 1].items.push(row);
+}
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': ['ScholarlyArticle', 'MedicalWebPage'],
+    headline: entry!.data.title,
+    name: entry!.data.title,
+    url: `${site.url}/the-explanatory-document/`,
+    description: entry!.data.description,
+    inLanguage: 'en',
+    author: [
+      { '@type': 'Person', name: 'Chloé Pronovost-Morgan' },
+      { '@type': 'Person', name: 'Kyle T. Greenway' },
+      { '@type': 'Person', name: 'Leor Roseman' },
+      { '@type': 'Organization', name: 'The ReSPCT Experts' },
+    ],
+    publisher: { '@type': 'Organization', name: site.name, url: site.url },
+    isBasedOn: {
+      '@type': 'ScholarlyArticle',
+      headline: citation.title,
+      identifier: `https://doi.org/${citation.doi}`,
+      sameAs: `https://doi.org/${citation.doi}`,
+      url: citation.url,
+      isPartOf: { '@type': 'Periodical', name: citation.journal },
+      datePublished: citation.year,
+    },
+    citation: `${citation.authors}. ${citation.title}. ${citation.journal}. ${citation.year}. doi:${citation.doi}`,
+    encoding: { '@type': 'MediaObject', encodingFormat: 'application/pdf', contentUrl: `${site.url}${pdfs.explanatory}` },
+    about: { '@type': 'MedicalGuideline', name: 'Reporting of Setting in Psychedelic Clinical Trials (ReSPCT) Guidelines' },
+  },
+  site.organizationSchema!,
+];
+---
+<Layout
+  site={site}
+  page={{
+    title: 'The ReSPCT Guidelines Explained — explanatory document',
+    description: entry!.data.description,
+    path: '/the-explanatory-document/',
+    ogType: 'article',
+    schema,
+  }}
+  nav={nav}
+>
+  <main id="main" class="doc">
+    <PageHeader eyebrow="Explanatory document" title={entry!.data.title}>
+      <div class="cluster" style="margin-top: var(--s-6)">
+        <Button href={u(pdfs.explanatory)}>Explanatory document PDF</Button>
+      </div>
+    </PageHeader>
+
+    <Section>
+      <div class="with-sidebar">
+        <nav class="toc" aria-labelledby="toc-heading">
+          <details class="toc__details" id="toc-details" open>
+            <summary><h2 id="toc-heading">Table of Contents</h2></summary>
+          <ul>
+            {groups.map((g) => (
+              <li style={`--sec:${RESPCT_SECTIONS[g.key].fill};--sec-text:${RESPCT_SECTIONS[g.key].text}`}>
+                <span class="toc__group">{g.name}</span>
+                <ul>
+                  {g.items.map((it) => (
+                    <li><a href={it.href}>{it.label}</a></li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+            {refs && <li><a class="toc__refs" href={refs.href}>{refs.label}</a></li>}
+          </ul>
+          </details>
+        </nav>
+
+        <article class="doc__body">
+          <figure class="doc-intro__art">
+            <img
+              src={u('/images/respct-illustration-detail-800.webp')}
+              srcset={`${u('/images/respct-illustration-detail-800.webp')} 800w, ${u('/images/respct-illustration-detail-1600.webp')} 1600w`}
+              sizes="(min-width: 48.9em) 18rem, 100vw"
+              width="800"
+              height="1063"
+              loading="lazy"
+              decoding="async"
+              alt="Detail of the ReSPCT illustration by Natasha Wigoder: inside a mushroom cap, two people recline in a warmly lit room with speakers, cushions and plants."
+            />
+          </figure>
+          <div class="prose">
+            <Content />
+          </div>
+        </article>
+      </div>
+    </Section>
+  </main>
+  <FooterCredit slot="footer-meta" />
+</Layout>
+
+<script>
+  // Progressive enhancement: the table of contents is open by default (works without JS);
+  // on narrow screens it collapses so the document is not pushed 1 200 px down the page.
+  const toc = document.getElementById('toc-details') as HTMLDetailsElement | null;
+  const mq = window.matchMedia('(max-width: 48.89em)');
+  const sync = () => { if (toc) toc.open = !mq.matches; };
+  sync();
+  mq.addEventListener('change', sync);
+  toc?.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', () => { if (mq.matches && toc) toc.open = false; }));
+</script>

@@ -1,0 +1,115 @@
+---
+import { Layout, Section, Button } from '@pcl/design-system';
+import { getEntry, render } from 'astro:content';
+import { pdfs, citation } from '../site.config';
+import { siteConfig as site, u, navFor } from '../lib/url';
+import Citation from '../components/Citation.astro';
+import FooterCredit from '../components/FooterCredit.astro';
+import '../styles/site.css';
+
+const entry = await getEntry('docs', 'home');
+const { Content } = await render(entry!);
+const nav = navFor('/');
+
+const words: { initial: string; rest: string; key: string }[] = [
+  { initial: 'Re', rest: 'porting', key: 're' },
+  { initial: 'S', rest: 'etting in', key: 's' },
+  { initial: 'P', rest: 'sychedelic', key: 'p' },
+  { initial: 'C', rest: 'linical', key: 'c' },
+  { initial: 'T', rest: 'rials', key: 't' },
+];
+const illustrationAlt =
+  'Watercolour illustration of psilocybin mushrooms; inside the cap of the largest one, two people recline in a warmly lit room with speakers and cushions.';
+
+const schema = [
+  site.organizationSchema!,
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: site.name,
+    alternateName: 'ReSPCT',
+    url: site.url,
+    publisher: { '@type': 'Organization', name: site.name },
+    about: {
+      '@type': 'ScholarlyArticle',
+      headline: citation.title,
+      identifier: `https://doi.org/${citation.doi}`,
+      url: citation.url,
+      isPartOf: { '@type': 'Periodical', name: citation.journal },
+      datePublished: citation.year,
+    },
+  },
+];
+---
+<Layout
+  site={site}
+  page={{
+    title: 'The ReSPCT Guidelines — Reporting of Setting in Psychedelic Clinical Trials',
+    description: entry!.data.description,
+    path: '/',
+    schema,
+  }}
+  nav={nav}
+>
+  <main id="main">
+    <div class="cover">
+      <div class="container cover__title">
+        <h1 class="acrostic" aria-label="Reporting Setting in Psychedelic Clinical Trials">
+          {words.map((w) => (
+            <span class="acrostic__word" aria-hidden="true">
+              <span class={`acrostic__initial acrostic__initial--${w.key}`}>{w.initial}</span>{w.rest}
+            </span>
+          ))}
+        </h1>
+        <p class="cover__credit">
+          Illustration by <a href="https://natashawigoder.com/" target="_blank" rel="noopener noreferrer">Natasha Wigoder</a>.
+        </p>
+      </div>
+      <div class="cover__frame">
+        <img
+          class="cover__img"
+          src={u('/images/respct-illustration-1600.webp')}
+          srcset={`${u('/images/respct-illustration-800.webp')} 800w, ${u('/images/respct-illustration-1600.webp')} 1600w, ${u('/images/respct-illustration-2480.webp')} 2480w`}
+          sizes="(min-width: 48em) min(100vw, 58rem), 100vw"
+          width="2480"
+          height="2481"
+          alt={illustrationAlt}
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+    </div>
+
+    <Section tight>
+      <div class="home-intro stack">
+        <p class="eyebrow">An international Delphi consensus</p>
+        <div class="prose"><Content /></div>
+        <Citation />
+        <div class="cluster">
+          <Button href={u('/the-respct-guidelines/')}>The ReSPCT Guidelines</Button>
+          <Button href={u('/the-explanatory-document/')} variant="secondary">Explanatory Document</Button>
+          <Button href={citation.url} variant="secondary" external>Original Article</Button>
+        </div>
+      </div>
+    </Section>
+
+    <Section band tight ariaLabelledby="downloads">
+      <h2 id="downloads">Downloads</h2>
+      <div class="grid grid--2" style="margin-top: var(--s-6)">
+        <div class="card">
+          <p class="eyebrow">PDF</p>
+          <h3>Explanatory document</h3>
+          <p>Each of the 30 items explained, with suggested reporting questions, measurement tools and expert quotes from the Delphi process.</p>
+          <p><Button href={u(pdfs.explanatory)} variant="primary" size="small">Download the explanatory document</Button></p>
+        </div>
+        <div class="card">
+          <p class="eyebrow">PDF</p>
+          <h3>Printable checklist</h3>
+          <p>A fillable, printable checklist of the 30 ReSPCT items to complete and submit alongside a psychedelic clinical trial publication.</p>
+          <p><Button href={u(pdfs.checklist)} variant="primary" size="small">Download the printable checklist</Button></p>
+        </div>
+      </div>
+    </Section>
+  </main>
+  <FooterCredit slot="footer-meta" />
+</Layout>

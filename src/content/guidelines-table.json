@@ -1,0 +1,184 @@
+{
+  "intro": "The ReSPCT guidelines consist of 30 items divided into four sections. Each item should be reported in the main text or supplement of psychedelic clinical trial publications. A printable checklist and complementary explanatory document are also provided.",
+  "columns": [
+    "Item",
+    "Item Number",
+    "Item Details"
+  ],
+  "sections": [
+    {
+      "name": "Physical Environment",
+      "key": "physical",
+      "items": [
+        {
+          "number": 1,
+          "name": "Location",
+          "details": "Location of the trial, and whether indoors/outdoors and urban/rural/suburban."
+        },
+        {
+          "number": 2,
+          "name": "Ambiance",
+          "details": "Room ambiance curated by the study team."
+        },
+        {
+          "number": 3,
+          "name": "Access to nature",
+          "details": "Sources of nature or natural elements accessible to participants."
+        },
+        {
+          "number": 4,
+          "name": "Objects and decorations",
+          "details": "Objects and decorations in the room."
+        },
+        {
+          "number": 5,
+          "name": "Lighting",
+          "details": "Room lighting and adjustability."
+        },
+        {
+          "number": 6,
+          "name": "Sensory reduction",
+          "details": "Sensory reduction used, such as headphones and eyeshades."
+        },
+        {
+          "number": 7,
+          "name": "Bathroom facilities",
+          "details": "Level of bathroom accessibility, privacy, and safety."
+        }
+      ]
+    },
+    {
+      "name": "Dosing Session Procedure",
+      "key": "dosing",
+      "items": [
+        {
+          "number": 8,
+          "name": "Number and roles of people present",
+          "details": "Number and roles of people present, including participants, study staff, and informal support."
+        },
+        {
+          "number": 9,
+          "name": "Positioning",
+          "details": "Relative position of people in the room, and what participants were positioned on."
+        },
+        {
+          "number": 10,
+          "name": "Focus and main activities",
+          "details": "Focus (internal or external) and main activities of the dosing session."
+        },
+        {
+          "number": 11,
+          "name": "Music or soundscapes",
+          "details": "Music or soundscapes that accompanied the dosing experience."
+        },
+        {
+          "number": 12,
+          "name": "Interpersonal interventions",
+          "details": "Verbal or physical interpersonal interventions used throughout the session."
+        },
+        {
+          "number": 13,
+          "name": "Participant autonomy, control, and agency",
+          "details": "Level of participant control and agency over activities and environment of the dosing session."
+        },
+        {
+          "number": 14,
+          "name": "Dosing regimen",
+          "details": "Dosing regimen, including drug dose(s), frequency, and length of the session."
+        },
+        {
+          "number": 15,
+          "name": "Medical and experimental procedures or assessments",
+          "details": "Medical and experimental procedures performed during the session."
+        },
+        {
+          "number": 16,
+          "name": "Pre- and post-dosing protocol",
+          "details": "Activities before and after dosing, including participant arrival and release conditions."
+        },
+        {
+          "number": 17,
+          "name": "Potential disturbances or interruptions",
+          "details": "Disturbances that may have impacted the dosing session."
+        }
+      ]
+    },
+    {
+      "name": "Therapeutic Framework and Protocol",
+      "key": "framework",
+      "items": [
+        {
+          "number": 18,
+          "name": "Therapeutic or guiding approach",
+          "details": "Therapeutic or guiding approach used throughout the study, if any, with the accompanying manual or protocol."
+        },
+        {
+          "number": 19,
+          "name": "Narrative framing",
+          "details": "Framing of the trial intervention by the study team, including the short- and long-term drug effects."
+        },
+        {
+          "number": 20,
+          "name": "Number of sessions",
+          "details": "Number and length of preparation, dosing, and integration sessions."
+        },
+        {
+          "number": 21,
+          "name": "Preparation protocol",
+          "details": "Activities performed during the preparation sessions."
+        },
+        {
+          "number": 22,
+          "name": "Integration protocol",
+          "details": "Activities performed during the integration sessions."
+        },
+        {
+          "number": 23,
+          "name": "Additional support or follow-up",
+          "details": "Formal or informal support or follow-up offered to participants after the end of the trial, including in the case of adverse events."
+        },
+        {
+          "number": 24,
+          "name": "Study personnel qualifications",
+          "details": "The credentials, training, and expertise of personnel providing the study intervention or care."
+        },
+        {
+          "number": 25,
+          "name": "Cultural competence and safety",
+          "details": "Study team's level of cultural competence and efforts towards cultural safety."
+        }
+      ]
+    },
+    {
+      "name": "Subjective Experiences",
+      "key": "subjective",
+      "items": [
+        {
+          "number": 26,
+          "name": "Therapeutic alliance",
+          "details": "Therapeutic alliance between participants and facilitators throughout the intervention."
+        },
+        {
+          "number": 27,
+          "name": "Trust",
+          "details": "Participant's level of trust throughout the intervention."
+        },
+        {
+          "number": 28,
+          "name": "Physical comfort",
+          "details": "Participant's level of physical comfort during the dosing session."
+        },
+        {
+          "number": 29,
+          "name": "Physical safety",
+          "details": "Participant's sense of physical safety during the dosing session."
+        },
+        {
+          "number": 30,
+          "name": "Psychological and cultural safety",
+          "details": "Participant's sense of psychological and cultural safety with the people present during the dosing session."
+        }
+      ]
+    }
+  ]
+}

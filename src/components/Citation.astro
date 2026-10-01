@@ -1,0 +1,9 @@
+---
+/** The Nature Medicine reference, used on every page. */
+import { citation as c } from '../site.config';
+export interface Props { label?: boolean; class?: string }
+const { label = true, class: cls = '' } = Astro.props;
+---
+<p class={['citation', cls].filter(Boolean).join(' ')}>
+  {label && <span>Reference: </span>}{c.authors}. {c.title}. <em>{c.journal}.</em> {c.year}. <a href={c.url} target="_blank" rel="noopener noreferrer">{c.url}</a> (doi:{c.doi})
+</p>
