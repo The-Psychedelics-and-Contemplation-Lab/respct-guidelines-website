@@ -84,12 +84,23 @@
     mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
   }
   .cover__credit { margin-top: var(--s-4); }
-}
-/* When the frame is narrower than the viewport, soften its vertical edges into the paper too */
-@media (min-width: 1100px) {
+
+  /* The illustration dissolves into the paper on all four sides, so the square never
+     shows a hard edge: a horizontal mask on the frame (0→14 % and 86→100 % of the
+     width) nested with a vertical mask on the image itself (13 % top, 17 % bottom —
+     the same fades as before). The vertical one sits on the image rather than the
+     frame so it travels with the parallax: the base of the drawing is treated the
+     same at every scroll position instead of sliding deeper into a fixed fade. The
+     fades only touch the artwork's own paper margins (the drawing spans ≈ 19–82 % of
+     the width). The paper-coloured overlays stay for narrow screens (no mask there). */
+  .cover__frame::before, .cover__frame::after { display: none; }
   .cover__frame {
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
-    mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+  }
+  .cover__img {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 13%, #000 83%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 13%, #000 83%, transparent);
   }
 }
 
@@ -225,6 +236,8 @@
 @media print {
   .cover__frame::before, .cover__frame::after, .cover__fade-left { display: none; }
   .cover__title { position: static; transform: none; width: auto; }
+  .cover__title-layer, .cover__img { transform: none !important; }
+  .cover__frame, .cover__img { -webkit-mask-image: none; mask-image: none; }
   .cover__frame { max-height: 60vh; }
   .guidelines-table .section-row td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .doc-intro__art { display: none; }

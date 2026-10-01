@@ -58,13 +58,18 @@ const schema = [
          at the top and bottom; the acrostic title sits on the paper at the top left. -->
     <div class="cover">
       <div class="container cover__title">
-        <h1 class="acrostic reveal reveal--left" aria-label="Reporting Setting in Psychedelic Clinical Trials">
-          {words.map((w) => (
-            <span class="acrostic__word" aria-hidden="true">
-              <span class={`acrostic__initial acrostic__initial--${w.key}`}>{w.initial}</span>{w.rest}
-            </span>
-          ))}
-        </h1>
+        <!-- The parallax layer is a wrapper (not the h1, whose reveal uses its own transform;
+             not .cover__title, which is centred with translateX). The title lags the page
+             (+0.28) while the illustration leads it (−0.12); the script clamps both to ±120 px. -->
+        <div class="cover__title-layer" data-parallax="0.28">
+          <h1 class="acrostic reveal reveal--left" aria-label="Reporting Setting in Psychedelic Clinical Trials">
+            {words.map((w) => (
+              <span class="acrostic__word" aria-hidden="true">
+                <span class={`acrostic__initial acrostic__initial--${w.key}`}>{w.initial}</span>{w.rest}
+              </span>
+            ))}
+          </h1>
+        </div>
       </div>
       <div class="cover__frame">
         <img
@@ -77,7 +82,7 @@ const schema = [
           alt={illustrationAlt}
           fetchpriority="high"
           decoding="async"
-          data-parallax="-0.05"
+          data-parallax="-0.12"
         />
         <div class="cover__fade-left" aria-hidden="true"></div>
       </div>
