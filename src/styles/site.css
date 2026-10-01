@@ -13,16 +13,21 @@
 }
 
 /* --- Home: full-width cover with the square illustration shown in full ---- */
-.cover { position: relative; width: 100%; background: var(--paper); --cover-max: 58rem; }
+/* The frame is as wide as the viewport (height = width, the illustration is square)
+   and capped at 1100 px on very wide screens, centred on the paper. */
+.cover { position: relative; width: 100%; background: var(--paper); --cover-max: 1100px; }
 .cover__frame {
   position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;              /* the illustration is 2480 × 2481: shown whole, never cropped */
+  width: min(100%, var(--cover-max));
+  margin-inline: auto;
+  aspect-ratio: 1 / 1;              /* 2480 × 2481: shown whole, never cropped */
+  overflow: hidden;
 }
 .cover__img {
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;              /* letterboxed on cream, never cropped */
+  object-fit: contain;
   object-position: center;
 }
 /* Long fades to the cream page colour: 0→13 % of the height at the top, 0→17 % at the bottom */
@@ -31,6 +36,7 @@
   content: "";
   position: absolute;
   left: 0; right: 0;
+  z-index: 1;
   pointer-events: none;
 }
 .cover__frame::before { top: 0; height: 13%; background: linear-gradient(to bottom, var(--paper), rgba(251, 250, 248, 0)); }
@@ -49,34 +55,58 @@
 .acrostic__initial--re { color: #1E3B37; }
 .acrostic__initial--s { color: #2A4F4A; }
 .acrostic__initial--p { color: #35635E; }
-.acrostic__initial--c { color: #40766F; }
-.acrostic__initial--t { color: #477D78; }
+.acrostic__initial--c { color: #3D6E68; }
+.acrostic__initial--t { color: #437570; }
 
-.cover__title { padding-block: var(--s-8) var(--s-2); }
-.cover__credit { margin-top: var(--s-3); font-family: var(--font-sans); font-size: var(--fs-small); color: var(--ink-muted); }
+.cover__title { padding-block: var(--s-10) var(--s-2); }
+.cover__credit { margin: var(--s-3) 0 0; font-family: var(--font-sans); font-size: var(--fs-small); color: var(--ink-muted); }
 
-@media (min-width: 48em) {
-  /* On wide screens the title sits on the empty paper at the top left of the
-     illustration, as on the original site; the frame is capped in height and
-     the square image is centred inside it. */
-  .cover__frame { aspect-ratio: auto; height: min(100vw, var(--cover-max)); }
+@media (min-width: 60em) {
+  /* Wide screens: the title sits on the paper at the top left of the illustration.
+     Besides the top fade, a soft paper gradient runs in from the left edge behind the
+     title so the darker greens keep ≥ 4.5:1 on the illustration's own paper tone. */
   .cover__title {
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
     width: min(100% - 2 * var(--gutter), var(--container));
-    padding: var(--s-8) 0 0;
+    padding: var(--s-10) 0 0;
     pointer-events: none;
   }
-  .cover__title a { pointer-events: auto; }
+  .cover__frame .cover__img { position: relative; z-index: 0; }
+  .cover__fade-left {
+    position: absolute; z-index: 1; pointer-events: none;
+    top: 0; left: 0; width: 56%; height: 62%;
+    background: linear-gradient(to right, var(--paper) 0%, var(--paper) 24%, rgba(251, 250, 248, 0.8) 40%, rgba(251, 250, 248, 0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+  }
+  .cover__credit { margin-top: var(--s-4); }
+}
+/* When the frame is narrower than the viewport, soften its vertical edges into the paper too */
+@media (min-width: 1100px) {
+  .cover__frame {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+  }
 }
 
-.home-intro { max-width: var(--measure); }
+.home-intro { max-width: var(--measure); margin-inline: auto; }
 .home-intro .cluster { margin-top: var(--s-8); }
+.home-pair { align-items: center; }
+.home-pair .pullquote { margin-top: var(--s-16); }
+.home-pair .pullquote cite a { color: inherit; }
+@media (max-width: 40em) { .home-pair .pullquote { margin-top: var(--s-8); } }
+.home-downloads__title { text-align: center; }
 .citation { font-family: var(--font-sans); font-size: var(--fs-ui); line-height: 1.55; color: var(--ink-muted); max-width: var(--measure); }
 .citation em { font-style: italic; }
+
+/* --- Page headers with a motif behind them (guidelines: veins; explanatory: rings) --- */
+.page-header-wm .watermark--right { top: -17rem; right: -6%; }
+.page-header-wm--subtle .watermark { opacity: 0.09; --wm-size: 40rem; top: -12rem; }
+@media (max-width: 59.99em) { .page-header-wm .watermark { top: -9rem; right: -10%; } }
 
 /* --- Guidelines table ---------------------------------------------------- */
 .guidelines-table col.col-item { width: 30%; }
@@ -193,8 +223,9 @@
 
 /* --- Print ---------------------------------------------------------------- */
 @media print {
-  .cover__frame::before, .cover__frame::after { display: none; }
+  .cover__frame::before, .cover__frame::after, .cover__fade-left { display: none; }
   .cover__title { position: static; transform: none; width: auto; }
+  .cover__frame { max-height: 60vh; }
   .guidelines-table .section-row td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .doc-intro__art { display: none; }
   .doc .prose { max-width: none; }

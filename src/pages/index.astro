@@ -1,5 +1,5 @@
 ---
-import { Layout, Section, Button } from '@pcl/design-system';
+import { Layout, Section, Button, SectionMark, Figure } from '@pcl/design-system';
 import { getEntry, render } from 'astro:content';
 import { pdfs, citation } from '../site.config';
 import { siteConfig as site, u, navFor } from '../lib/url';
@@ -20,6 +20,8 @@ const words: { initial: string; rest: string; key: string }[] = [
 ];
 const illustrationAlt =
   'Watercolour illustration of psilocybin mushrooms; inside the cap of the largest one, two people recline in a warmly lit room with speakers and cushions.';
+const detailAlt =
+  'Detail of the ReSPCT illustration: inside a mushroom cap, two people recline in a warmly lit room with speakers, cushions and plants.';
 
 const schema = [
   site.organizationSchema!,
@@ -52,40 +54,46 @@ const schema = [
   nav={nav}
 >
   <main id="main">
+    <!-- Full-width cover: the square illustration shown whole, fading into the paper
+         at the top and bottom; the acrostic title sits on the paper at the top left. -->
     <div class="cover">
       <div class="container cover__title">
-        <h1 class="acrostic" aria-label="Reporting Setting in Psychedelic Clinical Trials">
+        <h1 class="acrostic reveal reveal--left" aria-label="Reporting Setting in Psychedelic Clinical Trials">
           {words.map((w) => (
             <span class="acrostic__word" aria-hidden="true">
               <span class={`acrostic__initial acrostic__initial--${w.key}`}>{w.initial}</span>{w.rest}
             </span>
           ))}
         </h1>
-        <p class="cover__credit">
-          Illustration by <a href="https://natashawigoder.com/" target="_blank" rel="noopener noreferrer">Natasha Wigoder</a>.
-        </p>
       </div>
       <div class="cover__frame">
         <img
           class="cover__img"
           src={u('/images/respct-illustration-1600.webp')}
           srcset={`${u('/images/respct-illustration-800.webp')} 800w, ${u('/images/respct-illustration-1600.webp')} 1600w, ${u('/images/respct-illustration-2480.webp')} 2480w`}
-          sizes="(min-width: 48em) min(100vw, 58rem), 100vw"
+          sizes="min(100vw, 1100px)"
           width="2480"
           height="2481"
           alt={illustrationAlt}
           fetchpriority="high"
           decoding="async"
+          data-parallax="-0.05"
         />
+        <div class="cover__fade-left" aria-hidden="true"></div>
+      </div>
+      <div class="container">
+        <p class="cover__credit">
+          Illustration by <a href="https://natashawigoder.com/" target="_blank" rel="noopener noreferrer">Natasha Wigoder</a>.
+        </p>
       </div>
     </div>
 
     <Section tight>
+      <SectionMark label="An international Delphi consensus" accent />
       <div class="home-intro stack">
-        <p class="eyebrow">An international Delphi consensus</p>
-        <div class="prose"><Content /></div>
-        <Citation />
-        <div class="cluster">
+        <div class="prose reveal reveal--fade"><Content /></div>
+        <Citation class="reveal reveal--fade" />
+        <div class="cluster reveal reveal--fade" style="--reveal-delay: 120ms">
           <Button href={u('/the-respct-guidelines/')}>The ReSPCT Guidelines</Button>
           <Button href={u('/the-explanatory-document/')} variant="secondary">Explanatory Document</Button>
           <Button href={citation.url} variant="secondary" external>Original Article</Button>
@@ -93,9 +101,31 @@ const schema = [
       </div>
     </Section>
 
-    <Section band tight ariaLabelledby="downloads">
-      <h2 id="downloads">Downloads</h2>
-      <div class="grid grid--2" style="margin-top: var(--s-6)">
+    <Section band>
+      <div class="image-pair home-pair">
+        <Figure
+          class="reveal reveal--scale"
+          src={u('/images/respct-illustration-detail-800.webp')}
+          srcset={`${u('/images/respct-illustration-detail-800.webp')} 800w, ${u('/images/respct-illustration-detail-1600.webp')} 1600w`}
+          sizes="(min-width: 40em) 50vw, 100vw"
+          width={1600}
+          height={2126}
+          alt={detailAlt}
+          ratio="tall"
+          drift
+          caption="The dosing room, inside the cap. Illustration by Natasha Wigoder."
+        />
+        <blockquote class="pullquote reveal" style="--reveal-delay: 160ms">
+          We encourage study teams to report each item in publications of clinical trials involving psychedelic drugs, either in the main article or as supplementary information.
+          <cite><a href={u('/the-explanatory-document/')}>The ReSPCT Guidelines Explained</a>, introduction</cite>
+        </blockquote>
+      </div>
+    </Section>
+
+    <Section tight ariaLabelledby="downloads" watermark="veins" watermarkPosition="right" watermarkInk>
+      <SectionMark label="Resources" />
+      <h2 id="downloads" class="reveal home-downloads__title">Downloads</h2>
+      <div class="grid grid--2 reveal-group home-downloads" style="margin-top: var(--s-8)">
         <div class="card">
           <p class="eyebrow">PDF</p>
           <h3>Explanatory document</h3>

@@ -1,5 +1,5 @@
 ---
-import { Layout, PageHeader, Section, Button } from '@pcl/design-system';
+import { Layout, PageHeader, Section, Button, Watermark } from '@pcl/design-system';
 import { RESPCT_SECTIONS } from '@pcl/design-system';
 import { getEntry, render } from 'astro:content';
 import { pdfs, citation } from '../site.config';
@@ -72,11 +72,14 @@ const schema = [
   nav={nav}
 >
   <main id="main" class="doc">
-    <PageHeader eyebrow="Explanatory document" title={entry!.data.title}>
-      <div class="cluster" style="margin-top: var(--s-6)">
-        <Button href={u(pdfs.explanatory)}>Explanatory document PDF</Button>
-      </div>
-    </PageHeader>
+    <div class="has-watermark page-header-wm page-header-wm--subtle">
+      <Watermark motif="rings" position="right" />
+      <PageHeader eyebrow="Explanatory document" title={entry!.data.title}>
+        <div class="cluster" style="margin-top: var(--s-6)">
+          <Button href={u(pdfs.explanatory)}>Explanatory document PDF</Button>
+        </div>
+      </PageHeader>
+    </div>
 
     <Section>
       <div class="with-sidebar">
