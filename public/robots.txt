@@ -1,3 +1,6 @@
 User-agent: *
 Allow: /
 Sitemap: https://respctguidelines.com/sitemap.xml
+
+# Legacy WordPress upload paths are kept only so old links to the PDFs keep working.
+Disallow: /wp-content/
