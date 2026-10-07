@@ -8,6 +8,7 @@ export const site: SiteConfig & { base: string; previewUrl: string } = {
   url,
   lang: 'en',
   accent: '#3F6F6B',
+  analyticsToken: '326a05f3146143049014b2fa85183a5f',   // Cloudflare Web Analytics (cookieless page-view counts; dashboard: dash.cloudflare.com → Web analytics)
   affiliation:
     'The ReSPCT Guidelines are a project of the Psychedelics & Contemplation Lab, McGill University and the Lady Davis Institute for Medical Research, Jewish General Hospital, Montréal.',
   base: '/respct-guidelines-website',           // github.io path during testing
