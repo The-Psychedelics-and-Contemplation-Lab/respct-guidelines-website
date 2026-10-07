@@ -59,40 +59,38 @@ const schema = [
     <!-- Full-width cover: the square illustration shown whole, fading into the paper
          at the top and bottom; the acrostic title sits on the paper at the top left. -->
     <div class="cover">
-      <div class="container cover__title">
-        <!-- The parallax layer is a wrapper (not the h1, whose reveal uses its own clip-path;
-             not .cover__title, which is centred with translateX). Measured from the page top
-             (origin "top"), the title moves DOWN inside the cover at 68 % of the scroll speed,
-             so it climbs the screen at a third of the page speed, much slower than the
-             illustration (which leads the page, −0.08), and stays in view until ≈ 87 % of the
-             cover has scrolled by (at 0.55 it would be gone before the half). Its travel is clamped to
-             (cover height − title height − 2 rem): data-parallax-max is set by the script
-             below from the measured heights, so the title can never leave the cover.
-             The paper gradient behind the title lives in the same layer and travels with it. -->
-        <div class="cover__title-layer" data-parallax="0.68" data-parallax-origin="top" data-parallax-max="1400">
-          <div class="cover__fade-left" aria-hidden="true"></div>
-          <h1 class="acrostic reveal reveal--wipe" style="--reveal-dur: 1100ms" aria-label="Reporting Setting in Psychedelic Clinical Trials">
-            {words.map((w) => (
-              <span class="acrostic__word" aria-hidden="true">
-                <span class={`acrostic__initial acrostic__initial--${w.key}`}>{w.initial}</span>{w.rest}
-              </span>
-            ))}
-          </h1>
+      <!-- The stage holds the illustration and, on wide screens, the title layer that sits on
+           top of it. The title is position: sticky inside the stage: it stays exactly where it
+           is on screen while the illustration scrolls up beneath it (the paper gradient behind
+           it travels with it), and it is carried away only when it reaches the bottom of the
+           illustration. Pure CSS, compositor-only, no per-frame script. -->
+      <div class="cover__stage">
+        <div class="container cover__title">
+          <div class="cover__title-layer">
+            <div class="cover__fade-left" aria-hidden="true"></div>
+            <h1 class="acrostic reveal reveal--wipe" style="--reveal-dur: 1100ms" aria-label="Reporting Setting in Psychedelic Clinical Trials">
+              {words.map((w) => (
+                <span class="acrostic__word" aria-hidden="true">
+                  <span class={`acrostic__initial acrostic__initial--${w.key}`}>{w.initial}</span>{w.rest}
+                </span>
+              ))}
+            </h1>
+          </div>
         </div>
-      </div>
-      <div class="cover__frame">
-        <img
-          class="cover__img"
-          src={u('/images/respct-illustration-1600.webp')}
-          srcset={`${u('/images/respct-illustration-800.webp')} 800w, ${u('/images/respct-illustration-1600.webp')} 1600w, ${u('/images/respct-illustration-2480.webp')} 2480w`}
-          sizes="min(100vw, 1100px)"
-          width="2480"
-          height="2481"
-          alt={illustrationAlt}
-          fetchpriority="high"
-          decoding="async"
-          data-parallax="-0.08"
-        />
+        <div class="cover__frame">
+          <img
+            class="cover__img"
+            src={u('/images/respct-illustration-1600.webp')}
+            srcset={`${u('/images/respct-illustration-800.webp')} 800w, ${u('/images/respct-illustration-1600.webp')} 1600w, ${u('/images/respct-illustration-2480.webp')} 2480w`}
+            sizes="min(100vw, 1100px)"
+            width="2480"
+            height="2481"
+            alt={illustrationAlt}
+            fetchpriority="high"
+            decoding="async"
+            data-parallax="-0.08"
+          />
+        </div>
       </div>
       <div class="container">
         <p class="cover__credit reveal reveal--fade">
@@ -160,31 +158,3 @@ const schema = [
   <MotionFixes />
 </Layout>
 
-<script>
-  // Cover: clamp the title's parallax travel so it never leaves the cover's bottom edge.
-  // data-parallax-max = cover height − (title's natural top inside the cover) − title height − 2 rem,
-  // measured on load and resize. The design-system parallax script reads the attribute on every
-  // update; a synthetic resize event makes it re-measure and apply the new clamp immediately.
-  const cover = document.querySelector<HTMLElement>('.cover');
-  const layer = document.querySelector<HTMLElement>('.cover__title-layer');
-  if (cover && layer) {
-    const setMax = () => {
-      const t = layer.style.transform;
-      layer.style.transform = '';                       // measure the natural position
-      const top = layer.getBoundingClientRect().top - cover.getBoundingClientRect().top;
-      layer.style.transform = t;
-      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-      const max = Math.max(0, Math.round(cover.offsetHeight - top - layer.offsetHeight - 2 * rem));
-      if (layer.dataset.parallaxMax !== String(max)) {
-        layer.dataset.parallaxMax = String(max);
-        window.dispatchEvent(new Event('resize'));
-      }
-    };
-    setMax();
-    window.addEventListener('load', setMax);
-    window.addEventListener('resize', setMax);
-    // fonts settle after first paint: the title's height may change
-    document.fonts?.ready.then(setMax);
-
-  }
-</script>

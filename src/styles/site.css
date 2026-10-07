@@ -16,6 +16,7 @@
 /* The frame is as wide as the viewport (height = width, the illustration is square)
    and capped at 1100 px on very wide screens, centred on the paper. */
 .cover { position: relative; width: 100%; background: var(--paper); --cover-max: 1100px; }
+.cover__stage { position: relative; }
 .cover__frame {
   position: relative;
   width: min(100%, var(--cover-max));
@@ -66,30 +67,29 @@
 
 @media (min-width: 60em) {
   /* Wide screens: the title sits on the paper at the top left of the illustration and
-     drifts down inside the cover as the page scrolls (data-parallax on .cover__title-layer).
+     stays put on screen while the illustration scrolls beneath it (position: sticky).
      A soft paper gradient sits in the same layer, behind the title, running in from the
      left edge of the viewport and fading out above and below: it travels with the title,
      so the darker greens keep ≥ 4.5:1 wherever the title is over the drawing. */
   .cover__title {
     position: absolute;
     z-index: 2;
-    top: 0; bottom: 0;        /* spans the whole cover: the box the header clip (page script) is applied to */
+    top: 0; bottom: 0;        /* spans the illustration: the box that limits the sticky title */
     left: 50%;
     transform: translateX(-50%);
     width: min(100% - 2 * var(--gutter), var(--container));
-    padding: 0;
+    padding: var(--s-12) 0 var(--s-8);   /* bottom padding = where the title stops above the fade */
     pointer-events: none;
   }
-  /* The parallax script (origin "top") starts moving a layer only once its natural top
-     reaches the viewport top. The layer's box therefore starts at the page top, behind the
-     sticky header (negative margin, same padding inside), so the title drifts at a constant
-     speed from the very first pixel of scrolling instead of after a 7 rem dead zone. */
-  .cover__title-layer { margin-top: calc(-1 * var(--header-h)); padding-top: calc(var(--header-h) + var(--s-12)); }
+  /* Sticky: the title keeps its place on screen (same offset below the sticky header as at
+     page top) while the illustration scrolls up beneath it; the stage's bottom edge then
+     pushes it up with the page. The gradient behind it is in the same layer and travels too. */
+  .cover__title-layer { position: sticky; top: calc(var(--header-h) + var(--s-12)); }
   .cover__frame .cover__img { position: relative; z-index: 0; }
   .cover__fade-left {
     display: block;
     position: absolute; z-index: 0; pointer-events: none;
-    top: calc(var(--header-h) + var(--s-12) - 6rem); bottom: -7rem;
+    top: -6rem; bottom: -7rem;
     /* from the viewport's left edge to 30 rem past the column's left edge; the title is ≈ 16 rem wide */
     left: calc(50% - 50vw); width: calc(50vw - 50% + 34rem);
     background: linear-gradient(to right, var(--paper) calc(100% - 20rem), rgba(251, 250, 248, 0.7) calc(100% - 15rem), rgba(251, 250, 248, 0) 100%);
@@ -274,7 +274,8 @@
 @media print {
   .cover__frame::before, .cover__frame::after, .cover__fade-left { display: none; }
   .cover__title { position: static; transform: none; width: auto; }
-  .cover__title-layer, .cover__img { transform: none !important; }
+  .cover__title-layer { position: static; }
+  .cover__img { transform: none !important; }
   .card--lift { box-shadow: none; }
   .cover__frame, .cover__img { -webkit-mask-image: none; mask-image: none; }
   .cover__frame { max-height: 60vh; }
@@ -293,5 +294,5 @@
    paper: nothing to blur, nothing to clip, and the title disappears cleanly under it. */
 body.home .site-header { background: var(--paper); backdrop-filter: none; -webkit-backdrop-filter: none; }
 /* Keep the two moving cover layers on their own compositor layers (transform-only updates). */
-.cover__title-layer, .cover__img { will-change: transform; backface-visibility: hidden; }
+.cover__img { will-change: transform; backface-visibility: hidden; }
 .cover__frame { contain: paint; }
