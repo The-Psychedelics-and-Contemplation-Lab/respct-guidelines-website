@@ -31,11 +31,6 @@
   object-fit: contain;
   object-position: center;
 }
-/* Wide screens: the illustration is drawn 14 % taller than its frame so the stronger parallax
-   (up to ±220 px) never reveals the frame's edges; the extra is hidden under the top/bottom fades */
-@media (min-width: 60em) and (prefers-reduced-motion: no-preference) {
-  .cover__img { height: 114%; margin-top: -7%; }
-}
 /* Long fades to the cream page colour: 0→13 % of the height at the top, 0→17 % at the bottom */
 .cover__frame::before,
 .cover__frame::after {
