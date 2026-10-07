@@ -284,3 +284,14 @@
   .doc .prose > h4 { color: #000; }
   .toc__details { display: none; }
 }
+
+/* --- Home: smooth hero parallax ------------------------------------------------
+   The shared header is translucent with a backdrop blur. Over the drifting cover that
+   blur is recomputed on every scroll frame, and the display-size title sliding beneath
+   it showed through as a ghost (previously fixed with a per-frame clip-path on the
+   title, itself a repaint per frame). On the home page the header is simply opaque
+   paper: nothing to blur, nothing to clip, and the title disappears cleanly under it. */
+body.home .site-header { background: var(--paper); backdrop-filter: none; -webkit-backdrop-filter: none; }
+/* Keep the two moving cover layers on their own compositor layers (transform-only updates). */
+.cover__title-layer, .cover__img { will-change: transform; backface-visibility: hidden; }
+.cover__frame { contain: paint; }

@@ -51,6 +51,7 @@ const schema = [
     description: entry!.data.description,
     path: '/',
     schema,
+    bodyClass: 'home',
   }}
   nav={nav}
 >
@@ -185,24 +186,5 @@ const schema = [
     // fonts settle after first paint: the title's height may change
     document.fonts?.ready.then(setMax);
 
-    // The sticky header is translucent (92 % paper + blur), so a display-size title sliding
-    // beneath it would show through as a ghost. Clip the title container at the header's
-    // bottom edge instead: the title disappears cleanly under the header, line by line.
-    const title = document.querySelector<HTMLElement>('.cover__title');
-    const header = document.querySelector<HTMLElement>('.site-header');
-    const wide = window.matchMedia('(min-width: 60em)');
-    let ticking = false;
-    const clip = () => {
-      ticking = false;
-      if (!title) return;
-      if (!wide.matches) { title.style.clipPath = ''; return; }
-      const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
-      const top = Math.max(0, headerBottom - title.getBoundingClientRect().top);
-      title.style.clipPath = top > 0 ? `inset(${top.toFixed(1)}px 0 0 0)` : '';
-    };
-    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(clip); } };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    clip();
   }
 </script>
