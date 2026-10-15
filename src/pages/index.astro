@@ -19,15 +19,6 @@ const words: { initial: string; rest: string; key: string }[] = [
   { initial: 'C', rest: 'linical', key: 'c' },
   { initial: 'T', rest: 'rials', key: 't' },
 ];
-// Depth planes of the cover (see the markup). Speeds are relative to the page: negative = slower
-// than the page (further away), positive = slightly faster (nearer). Max = px clamp per plane.
-const layers = [
-  { name: 'bg', speed: '-0.09', max: '110' },
-  { name: 'central', speed: '-0.05', max: '60' },
-  { name: 'right', speed: '-0.02', max: '30' },
-  { name: 'front', speed: '0.02', max: '30' },
-];
-const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 const illustrationAlt =
   'Watercolour illustration of psilocybin mushrooms; inside the cap of the largest one, two people recline in a warmly lit room with speakers and cushions.';
 const detailAlt =
@@ -87,43 +78,18 @@ const schema = [
           </div>
         </div>
         <div class="cover__frame">
-          <!-- Narrow screens / reduced motion: the flat illustration. Wide screens: the same picture
-               cut into four depth planes (paper + grass, the tall mushroom, the right one, the group in
-               front with the ground) that scroll at slightly different speeds. The <picture> sources
-               swap in a 1-px placeholder so each screen only downloads the version it shows. -->
-          <picture class="cover__flat">
-            <source media="(min-width: 60em) and (prefers-reduced-motion: no-preference)" srcset={BLANK} />
-            <img
-              class="cover__img"
-              src={u('/images/respct-illustration-1600.webp')}
-              srcset={`${u('/images/respct-illustration-800.webp')} 800w, ${u('/images/respct-illustration-1600.webp')} 1600w`}
-              sizes="min(100vw, 1100px)"
-              width="2480"
-              height="2481"
-              alt={illustrationAlt}
-              fetchpriority="high"
-              decoding="async"
-            />
-          </picture>
-          <div class="cover__layers" role="img" aria-label={illustrationAlt}>
-            {layers.map((l) => (
-              <picture class={`cover__layer cover__layer--${l.name}`}>
-                <source media="(max-width: 59.99em), (prefers-reduced-motion: reduce)" srcset={BLANK} />
-                <img src={u(`/images/respct-cover-${l.name}.webp`)} width="1600" height="1600" alt="" decoding="async"
-                  fetchpriority="high"
-                  data-parallax={l.speed} data-parallax-max={l.max} />
-              </picture>
-            ))}
-          </div>
-          <script>
-            // The four planes appear together, once all of them are decoded (otherwise a heavy plane can
-            // show up alone for a moment on first load).
-            const box = document.querySelector<HTMLElement>('.cover__layers');
-            const imgs = [...document.querySelectorAll<HTMLImageElement>('.cover__layer img')];
-            const show = () => box?.classList.add('is-ready');
-            Promise.all(imgs.map((i) => (i.complete ? Promise.resolve() : i.decode().catch(() => {})))).then(show);
-            setTimeout(show, 2500);
-          </script>
+          <img
+            class="cover__img"
+            src={u('/images/respct-illustration-1600.webp')}
+            srcset={`${u('/images/respct-illustration-800.webp')} 800w, ${u('/images/respct-illustration-1600.webp')} 1600w, ${u('/images/respct-illustration-2480.webp')} 2480w`}
+            sizes="min(100vw, 1100px)"
+            width="2480"
+            height="2481"
+            alt={illustrationAlt}
+            fetchpriority="high"
+            decoding="async"
+            data-parallax="-0.08"
+          />
         </div>
       </div>
       <div class="container">
