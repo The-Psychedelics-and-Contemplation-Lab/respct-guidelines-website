@@ -124,6 +124,8 @@
   @media (prefers-reduced-motion: no-preference) {
     .cover__flat { display: none; }
     .cover__layers { display: block; position: absolute; inset: 0; }
+    html.js .cover__layers { opacity: 0; transition: opacity 700ms var(--ease); }
+    html.js .cover__layers.is-ready { opacity: 1; }
   }
 }
 

@@ -110,11 +110,20 @@ const schema = [
               <picture class={`cover__layer cover__layer--${l.name}`}>
                 <source media="(max-width: 59.99em), (prefers-reduced-motion: reduce)" srcset={BLANK} />
                 <img src={u(`/images/respct-cover-${l.name}.webp`)} width="1600" height="1600" alt="" decoding="async"
-                  fetchpriority={l.name === 'bg' ? 'high' : 'auto'}
+                  fetchpriority="high"
                   data-parallax={l.speed} data-parallax-max={l.max} />
               </picture>
             ))}
           </div>
+          <script>
+            // The four planes appear together, once all of them are decoded (otherwise a heavy plane can
+            // show up alone for a moment on first load).
+            const box = document.querySelector<HTMLElement>('.cover__layers');
+            const imgs = [...document.querySelectorAll<HTMLImageElement>('.cover__layer img')];
+            const show = () => box?.classList.add('is-ready');
+            Promise.all(imgs.map((i) => (i.complete ? Promise.resolve() : i.decode().catch(() => {})))).then(show);
+            setTimeout(show, 2500);
+          </script>
         </div>
       </div>
       <div class="container">
